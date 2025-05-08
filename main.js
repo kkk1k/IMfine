@@ -1,30 +1,48 @@
 document.addEventListener("DOMContentLoaded", () => {
   // --- 데이터 초기화 ---
-  let data = [
-    { id: 0, value: 75 },
-    { id: 1, value: 20 },
-    { id: 2, value: 80 },
-    { id: 3, value: 100 },
-    { id: 4, value: 70 },
-  ];
+  let data = localStorage.getItem("data");
+  if (data) {
+    data = JSON.parse(data);
+  } else {
+    data = [
+      { id: 0, value: 75 },
+      { id: 1, value: 20 },
+      { id: 2, value: 80 },
+      { id: 3, value: 100 },
+      { id: 4, value: 70 },
+    ];
+  }
 
-  // --- 렌더 함수들 ---
+  // -- chart --
   function renderChart() {
-    const chart = document.getElementById("chart");
-    chart.innerHTML = "";
-    // value 값에 따라 높이를 조정하여 막대 그래프를 그립니다.
+    const bars = document.getElementById("bars");
+
+    bars.innerHTML = "";
+
     const max = Math.max(...data.map((d) => d.value), 1);
+
     data.forEach((d) => {
+      // 1) Bar 생성
       const bar = document.createElement("div");
       bar.className = "bar";
       bar.style.height = (d.value / max) * 100 + "%";
-      const label = document.createElement("span");
-      label.textContent = d.value;
-      bar.appendChild(label);
-      chart.appendChild(bar);
+      let barHeight = bar.style.height;
+      // 값 레이블
+      const lbl = document.createElement("span");
+      lbl.textContent = d.value;
+      bar.appendChild(lbl);
+      bars.appendChild(bar);
+
+      // 2) X축 레이블 생성
+      const xlbl = document.createElement("div");
+      xlbl.className = "x-label";
+      xlbl.textContent = d.id;
+
+      bar.appendChild(xlbl);
     });
   }
 
+  // -- table --
   function renderTable() {
     const tbody = document.getElementById("table-body");
     tbody.innerHTML = "";
@@ -62,6 +80,10 @@ document.addEventListener("DOMContentLoaded", () => {
     data.splice(idx, 1);
   }
 
+  function saveData(item) {
+    localStorage.setItem("data", JSON.stringify(item));
+  }
+
   function renderJSON() {
     document.getElementById("json-editor").value = JSON.stringify(
       data,
@@ -82,6 +104,7 @@ document.addEventListener("DOMContentLoaded", () => {
       const idx = inp.dataset.index;
       data[idx].value = Number(inp.value);
     });
+    saveData(data);
     renderAll();
   });
 
@@ -109,6 +132,7 @@ document.addEventListener("DOMContentLoaded", () => {
           id: Number(o.id),
           value: Number(o.value),
         }));
+        saveData(data);
         renderAll();
       } else {
         alert("올바른 형식의 JSON 배열이 아닙니다!");

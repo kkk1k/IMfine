@@ -7,38 +7,52 @@
     <script src="main.js" defer></script>
   </head>
   <body>
-    <!-- <h1>아이엠파인 SD팀 지원자 김한경</h1> -->
-
+    <h1 style="display: none">아이엠파인 SD팀 지원자 김한경</h1>
+    <!-- <h2>아이엠파인 SD팀 지원자 김한경</h2> -->
     <!-- 1. 그래프 -->
-    <h3>1. 그래프</h3>
-    <div id="chart"></div>
+    <div>
+      <h3>1. 그래프</h3>
+      <div>
+        <div id="chart">
+          <div id="bars"></div>
+        </div>
+        <div id="tooltip" class="tooltip"></div>
+      </div>
+    </div>
 
     <!-- 2. 값 편집 -->
     <h3>저장하지 않으면 값이 바꾸지 않습니다.</h3>
-    <h3>2. 값 편집</h3>
-    <table>
-      <thead>
-        <tr>
-          <th>ID</th>
-          <th>값</th>
-          <th>삭제</th>
-        </tr>
-      </thead>
-      <tbody id="table-body"></tbody>
-    </table>
-    <button id="apply-table">Save</button>
+
+    <div>
+      <h3>2. 값 편집</h3>
+      <table>
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>값</th>
+            <th>삭제</th>
+          </tr>
+        </thead>
+        <tbody id="table-body"></tbody>
+      </table>
+      <button id="apply-table">Save</button>
+    </div>
 
     <!-- 3. 값 추가 -->
-    <h3>3. 값 추가</h3>
-    <div id="add-section">
-      <input type="number" id="new-id" placeholder="ID" />
-      <input type="number" id="new-val" placeholder="VALUE" />
-      <button id="btn-add">Add</button>
+    <div>
+      <h3>3. 값 추가</h3>
+      <div id="add-section">
+        <input type="number" id="new-id" placeholder="ID" />
+        <input type="number" id="new-val" placeholder="VALUE" />
+        <button id="btn-add">Add</button>
+      </div>
     </div>
 
     <!-- 4. 값 고급 편집 -->
-    <h3>4. 값 고급 편집</h3>
-    <textarea id="json-editor"></textarea><br />
-    <button id="apply-json">Save</button>
+    <div>
+      <h3>4. 값 고급 편집</h3>
+      <textarea id="json-editor"></textarea><br />
+      <button id="apply-json">Save</button>
+    </div>
   </body>
 </html>

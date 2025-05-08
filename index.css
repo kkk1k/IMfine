@@ -10,27 +10,58 @@ h1 {
 
 /* 1. 차트 스타일 */
 #chart {
+  width: 100%;
+  max-width: 600px;
+  margin-bottom: 40px;
+}
+
+#bars {
   display: flex;
   align-items: flex-end;
+  gap: 10px;
   height: 200px;
   border-left: 2px solid #333;
   border-bottom: 2px solid #333;
-  margin-bottom: 40px;
+  box-sizing: border-box;
 }
-.bar {
-  flex: 1;
-  margin: 0 5px;
-  background: #ccc;
+
+.bar-group {
   display: flex;
-  align-items: flex-end;
-  justify-content: center;
+  flex-direction: column;
+  align-items: center;
+}
+
+.bar {
+  width: 80%; /* wrapper 안에서 가로 80% */
+  background: #ccc;
   position: relative;
 }
+
 .bar span {
   position: absolute;
-  bottom: 100%;
+  top: -18px;
+  left: 50%;
+  transform: translateX(-50%);
   font-size: 12px;
-  margin-bottom: 4px;
+}
+
+.bar .x-label {
+  position: absolute;
+  top: calc(100% + 4px);
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 12px;
+}
+
+#y-axis {
+  position: absolute;
+  left: -30px;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  text-align: right;
+  box-sizing: border-box;
 }
 
 /* 2. 테이블 편집 */

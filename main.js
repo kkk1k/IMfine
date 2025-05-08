@@ -13,6 +13,15 @@ document.addEventListener("DOMContentLoaded", () => {
     ];
   }
 
+  const colors = [
+    "#BEE4D0",
+    "#6DE1D2",
+    "#FFD63A",
+    "#FFA955",
+    "#F75A5A",
+    "#8EE8E0",
+  ];
+
   // -- chart --
   function renderChart() {
     const bars = document.getElementById("bars");
@@ -21,24 +30,25 @@ document.addEventListener("DOMContentLoaded", () => {
 
     const max = Math.max(...data.map((d) => d.value), 1);
 
-    data.forEach((d) => {
+    data.forEach((d, idx) => {
       // 1) Bar 생성
       const bar = document.createElement("div");
       bar.className = "bar";
       bar.style.height = (d.value / max) * 100 + "%";
-      let barHeight = bar.style.height;
+      bar.style.backgroundColor = colors[idx % colors.length];
       // 값 레이블
-      const lbl = document.createElement("span");
-      lbl.textContent = d.value;
-      bar.appendChild(lbl);
+      const valueLabel = document.createElement("span");
+      valueLabel.textContent = d.value;
+      bar.appendChild(valueLabel);
       bars.appendChild(bar);
 
       // 2) X축 레이블 생성
-      const xlbl = document.createElement("div");
-      xlbl.className = "x-label";
-      xlbl.textContent = d.id;
+      const xLabel = document.createElement("div");
+      xLabel.className = "x-label";
+      xLabel.textContent = d.id;
+      bar.appendChild(xLabel);
 
-      bar.appendChild(xlbl);
+      // 3) Y축 레이블 생성
     });
   }
 
@@ -54,6 +64,7 @@ document.addEventListener("DOMContentLoaded", () => {
       // 값 (input)
       const tdVal = document.createElement("td");
       const inp = document.createElement("input");
+      inp.className = "table-input";
       inp.type = "number";
       inp.value = d.value;
       inp.dataset.index = idx;
@@ -102,7 +113,7 @@ document.addEventListener("DOMContentLoaded", () => {
   document.getElementById("apply-table").addEventListener("click", () => {
     document.querySelectorAll("#table-body input").forEach((inp) => {
       const idx = inp.dataset.index;
-      data[idx].value = Number(inp.value);
+      data[idx] = Number(inp.value);
     });
     saveData(data);
     renderAll();
@@ -113,10 +124,15 @@ document.addEventListener("DOMContentLoaded", () => {
     const nid = Number(document.getElementById("new-id").value);
     const nval = Number(document.getElementById("new-val").value);
     if (!isNaN(nid) && !isNaN(nval)) {
-      data.push({ id: nid, value: nval });
-      document.getElementById("new-id").value = "";
-      document.getElementById("new-val").value = "";
-      renderAll();
+      if (data.some((d) => d.id === nid)) {
+        alert("중복된 ID입니다!");
+        return;
+      } else {
+        data.push({ id: nid, value: nval });
+        document.getElementById("new-id").value = "";
+        document.getElementById("new-val").value = "";
+        renderAll();
+      }
     }
   });
 

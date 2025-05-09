@@ -1,7 +1,10 @@
+import { captureChart } from "./captureChart.js";
+import { renderChart, renderJSON, renderTable } from "./render.js";
+
 document.addEventListener("DOMContentLoaded", () => {
-  // --- 데이터 초기화 ---
+  // -- 데이터 초기화 --
   let data = localStorage.getItem("data");
-  if (data) {
+  if (data !== undefined && data !== null) {
     data = JSON.parse(data);
   } else {
     data = [
@@ -22,104 +25,35 @@ document.addEventListener("DOMContentLoaded", () => {
     "#8EE8E0",
   ];
 
-  // -- chart --
-  function renderChart() {
-    const bars = document.getElementById("bars");
-
-    bars.innerHTML = "";
-
-    const max = Math.max(...data.map((d) => d.value), 1);
-
-    data.forEach((d, idx) => {
-      // 1) Bar 생성
-      const bar = document.createElement("div");
-      bar.className = "bar";
-      bar.style.height = (d.value / max) * 100 + "%";
-      bar.style.backgroundColor = colors[idx % colors.length];
-      // 값 레이블
-      const valueLabel = document.createElement("span");
-      valueLabel.textContent = d.value;
-      bar.appendChild(valueLabel);
-      bars.appendChild(bar);
-
-      // 2) X축 레이블 생성
-      const xLabel = document.createElement("div");
-      xLabel.className = "x-label";
-      xLabel.textContent = d.id;
-      bar.appendChild(xLabel);
-
-      // 3) Y축 레이블 생성
-    });
-  }
-
-  // -- table --
-  function renderTable() {
-    const tbody = document.getElementById("table-body");
-    tbody.innerHTML = "";
-    data.forEach((d, idx) => {
-      const tr = document.createElement("tr");
-      // ID
-      const tdId = document.createElement("td");
-      tdId.textContent = d.id;
-      // 값 (input)
-      const tdVal = document.createElement("td");
-      const inp = document.createElement("input");
-      inp.className = "table-input";
-      inp.type = "number";
-      inp.value = d.value;
-      inp.dataset.index = idx;
-      tdVal.appendChild(inp);
-      // 삭제
-      const tdDel = document.createElement("td");
-      const del = document.createElement("a");
-      del.textContent = "삭제";
-      del.className = "delete";
-      del.dataset.index = idx;
-      del.addEventListener("click", (e) => {
-        deleteRow(e);
-        renderTable();
-      });
-      tdDel.appendChild(del);
-
-      tr.append(tdId, tdVal, tdDel);
-      tbody.appendChild(tr);
-    });
-  }
-
-  function deleteRow(e) {
-    const idx = e.target.dataset.index;
-    data.splice(idx, 1);
-  }
-
-  function saveData(item) {
-    localStorage.setItem("data", JSON.stringify(item));
-  }
-
-  function renderJSON() {
-    document.getElementById("json-editor").value = JSON.stringify(
-      data,
-      null,
-      2
-    );
+  function saveData() {
+    localStorage.setItem("data", JSON.stringify(data));
   }
 
   function renderAll() {
-    renderChart();
-    renderTable();
-    renderJSON();
+    renderChart(data, colors);
+    renderTable(data);
+    renderJSON(data);
   }
 
-  // 테이블 Apply
+  // capture chart
+  document
+    .getElementById("btn-capture-chart")
+    .addEventListener("click", () => captureChart(data, colors));
+
+  // table edit Apply
   document.getElementById("apply-table").addEventListener("click", () => {
-    document.querySelectorAll("#table-body input").forEach((inp) => {
-      const idx = inp.dataset.index;
-      data[idx] = Number(inp.value);
+    document.querySelectorAll("#table-body input").forEach((input) => {
+      const idx = input.dataset.index;
+      data[idx] = {
+        id: Number(data[idx].id),
+        value: Number(input.value),
+      };
     });
-    saveData(data);
+    saveData();
     renderAll();
   });
 
-  // 값 추가
+  // {id : value} Add
   document.getElementById("btn-add").addEventListener("click", () => {
     const nid = Number(document.getElementById("new-id").value);
     const nval = Number(document.getElementById("new-val").value);
@@ -142,11 +76,20 @@ document.addEventListener("DOMContentLoaded", () => {
       const parsed = JSON.parse(document.getElementById("json-editor").value);
       if (
         Array.isArray(parsed) &&
-        parsed.every((o) => "id" in o && "value" in o)
+        parsed.every((i) => "id" in i && "value" in i)
       ) {
-        data = parsed.map((o) => ({
-          id: Number(o.id),
-          value: Number(o.value),
+        const ids = parsed.map((item) => item.id);
+        const uniqueIds = new Set(ids);
+        // 중복된 ID 체크
+        if (uniqueIds.size !== ids.length) {
+          const dupIds = ids.filter((id, idx) => ids.indexOf(id) !== idx);
+          const dupList = [...new Set(dupIds)].join(", ");
+          alert(`id ${dupList} 중복 되었습니다`);
+          return;
+        }
+        data = parsed.map((item) => ({
+          id: Number(item.id),
+          value: Number(item.value),
         }));
         saveData(data);
         renderAll();

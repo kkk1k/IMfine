@@ -104,15 +104,33 @@ table {
 
 th,
 td {
-  border: 1px solid #c3ccd3;
   padding: 4px 8px;
   font-size: 16px;
   text-align: center;
 }
 
+tr {
+  cursor: not-allowed; /* 기본은 드래그 안 되는 느낌 */
+}
+tr.dragging {
+  opacity: 0.8 !important;
+  background-color: #e6f7ff !important;
+  position: relative;
+}
+tr.over {
+  border-bottom: 2px solid #3d90d7;
+}
+.drag-handle {
+  cursor: grab;
+}
+.drag-handle:active {
+  cursor: grabbing;
+}
+
 th {
   background: #e1effa;
   color: #000000;
+  cursor: default;
 }
 
 .table-input {

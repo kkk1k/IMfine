@@ -2,7 +2,7 @@ import { captureChart } from "./captureChart.js";
 import { renderChart, renderJSON, renderTable } from "./render.js";
 
 document.addEventListener("DOMContentLoaded", () => {
-  // -- 데이터 초기화 --
+  // 데이터 초기화
   let data = localStorage.getItem("data");
   if (data !== undefined && data !== null) {
     data = JSON.parse(data);
@@ -15,6 +15,7 @@ document.addEventListener("DOMContentLoaded", () => {
       { id: 4, value: 70 },
     ];
   }
+  let originalData = [...data]; // 원본 데이터 백업
 
   const colors = [
     "#BEE4D0",
@@ -27,6 +28,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   function saveData() {
     localStorage.setItem("data", JSON.stringify(data));
+    originalData = data.map((d) => ({ ...d }));
   }
 
   function renderAll() {
@@ -99,6 +101,15 @@ document.addEventListener("DOMContentLoaded", () => {
     } catch (err) {
       alert("JSON 파싱 에러: " + err.message);
     }
+  });
+
+  // 데이터 되돌리기
+  const undoBtn = document.querySelectorAll(".undo-changes");
+  undoBtn.forEach((btn) => {
+    btn.addEventListener("click", () => {
+      data = originalData.map((d) => ({ ...d }));
+      renderAll();
+    });
   });
 
   // 초기 렌더

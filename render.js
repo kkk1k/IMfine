@@ -1,3 +1,5 @@
+import { enableRowDragAndDrop } from "./dragDrop.js";
+
 // chart 랜더링
 export function renderChart(data, colors) {
   const bars = document.getElementById("bars");
@@ -76,8 +78,32 @@ export function renderTable(data) {
     });
     tdDel.appendChild(del);
 
-    tr.append(tdId, tdVal, tdDel);
+    // 4) 드래그
+    const tdHandle = document.createElement("td");
+    tdHandle.className = "drag-handle";
+    tdHandle.innerHTML = `
+      <svg
+        aria-hidden="true"
+        focusable="false"
+        class="svg-inline--fa fa-grip-dots-vertical fa-fw"
+        role="img"
+        xmlns="http://www.w3.org/2000/svg"
+        viewBox="0 0 256 512"
+        width="12"
+        height="15"
+      >
+        <path
+          fill="currentColor"
+          d="M64 128a32 32 0 1 0 0-64 32 32 0 1 0 0 64zm0 160a32 32 0 1 0 0-64 32 32 0 1 0 0 64zM96 416a32 32 0 1 0 -64 0 32 32 0 1 0 64 0zm96-288a32 32 0 1 0 0-64 32 32 0 1 0 0 64zm32 128a32 32 0 1 0 -64 0 32 32 0 1 0 64 0zM192 448a32 32 0 1 0 0-64 32 32 0 1 0 0 64z"
+        />
+      </svg>
+    `;
+
+    tr.append(tdId, tdVal, tdDel, tdHandle);
     tbody.appendChild(tr);
+  });
+  enableRowDragAndDrop(tbody, data, () => {
+    renderTable(data);
   });
 }
 

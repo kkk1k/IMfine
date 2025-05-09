@@ -37,12 +37,12 @@ document.addEventListener("DOMContentLoaded", () => {
     renderJSON(data);
   }
 
-  // capture chart
+  // 차트 캡처
   document
     .getElementById("btn-capture-chart")
     .addEventListener("click", () => captureChart(data, colors));
 
-  // table edit Apply
+  // 테이블 수정 적용
   document.getElementById("apply-table").addEventListener("click", () => {
     document.querySelectorAll("#table-body input").forEach((input) => {
       const idx = input.dataset.index;
@@ -55,7 +55,7 @@ document.addEventListener("DOMContentLoaded", () => {
     renderAll();
   });
 
-  // {id : value} Add
+  // {id : value} 추가
   document.getElementById("btn-add").addEventListener("click", () => {
     const nid = Number(document.getElementById("new-id").value);
     const nval = Number(document.getElementById("new-val").value);
@@ -67,6 +67,7 @@ document.addEventListener("DOMContentLoaded", () => {
         data.push({ id: nid, value: nval });
         document.getElementById("new-id").value = "";
         document.getElementById("new-val").value = "";
+        saveData(data);
         renderAll();
       }
     }

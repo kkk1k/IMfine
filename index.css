@@ -110,7 +110,7 @@ td {
 }
 
 tr {
-  cursor: not-allowed; /* 기본은 드래그 안 되는 느낌 */
+  cursor: not-allowed;
 }
 tr.dragging {
   opacity: 0.8 !important;
@@ -172,7 +172,7 @@ a.delete:hover {
   border: 1px solid #d1d5db;
   border-radius: 3px;
   color: #374151;
-  line-height: 1.25rem;
+  line-height: 20px;
 }
 
 #add-section input::placeholder {

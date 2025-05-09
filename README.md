@@ -8,6 +8,38 @@
 - Canvas API를 활용한 직접 구현 방식으로 외부 라이브러리 의존성 없음
 - 현재 차트 데이터를 동일한 스타일로 캔버스에 렌더링
 
+### 2. 테이블 행 드래그 앤 드롭 기능
+
+- 사용자가 테이블의 각 행을 드래그하여 순서를 변경할 수 있음
+- 드래그 핸들로 지정된 셀(.drag-handle)에서만 드래그를 시작하도록 구현
+- 드롭 시 테이블만 즉시 리렌더링 되어 순서가 반영되고, 차트/JSON 업데이트는 Save 버튼 클릭 시에만 반영
+
+```javascript
+import { enableRowDragAndDrop } from "./dragDrop.js";
+
+// Save 버튼 클릭 후
+const tbody = document.getElementById("table-body");
+enableRowDragAndDrop(tbody, data, () => {
+  renderTable(data); // 테이블만 리렌더링
+});
+```
+
+### 3. Undo 기능
+
+- 사용자가 Save(Apply) 이전 상태로 언제든 되돌릴 수 있는 Undo 버튼 제공
+
+- Save 버튼 클릭 시 원본 데이터 복제본(originalData)을 갱신하고, Undo 클릭 시 해당 복제본으로 복원
+
+```javascript
+// Save 클릭 시
+saveData(); // localStorage 저장 + originalData 갱신
+renderAll();
+
+// Undo 클릭 시
+data = originalData.map((d) => ({ ...d }));
+renderAll();
+```
+
 ## 주요 에러 처리 기능
 
 ### 1. 데이터 초기화 안전 처리
@@ -70,3 +102,10 @@ if (uniqueIds.size !== ids.length) {
   return;
 }
 ```
+
+## 모듈 구조
+
+- captureChart.js: 차트 이미지 캡처 기능
+- dragDrop.js: 테이블 행 드래그 앤 드롭 기능
+- render.js: 차트, 테이블, JSON 렌더링 기능
+- main.js: 메인 로직 및 이벤트 처리
